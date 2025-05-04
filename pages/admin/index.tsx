@@ -40,7 +40,7 @@ const AdminDashboard = () => {
 	}, [parentId, dataSource]);
 
 	const handleCreate = () => {
-		mutate(
+		mutate.mutate(
 			{
 				name,
 				birthDate: birthDate ? new Date(birthDate).toISOString() : undefined,

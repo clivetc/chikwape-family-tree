@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	createFamilyTree,
 	getAllMembers,
@@ -7,21 +7,20 @@ import {
 
 export const useFamilyTrees = () => {
 	const queryClient = useQueryClient();
-	const { isLoading, data: dataSource } = useQuery(
-		"family-member",
-		getFamilyTrees,
-	);
 
-	const { mutate } = useMutation(createFamilyTree, {
-		onSuccess: () => {
-			queryClient.invalidateQueries("family-");
-		},
+	const { isLoading, data: dataSource } = useQuery({
+		queryKey: ["familyTrees"],
+		queryFn: getFamilyTrees,
 	});
 
-	const { data, isLoading: isFamilyLoading } = useQuery(
-		"family-tree",
-		getAllMembers,
-	);
+	const mutate = useMutation({
+		mutationFn: createFamilyTree,
+	});
+
+	const { data, isLoading: isFamilyLoading } = useQuery({
+		queryKey: ["familyMembers"],
+		queryFn: getAllMembers,
+	});
 
 	return { isLoading, dataSource, mutate, data, isFamilyLoading };
 };
