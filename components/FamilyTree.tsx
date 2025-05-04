@@ -24,7 +24,7 @@ const FamilyTree = ({ data }: { data: IFamily[] }) => {
 			</Flex>
 			{/* <Divider mb={4} /> */}
 			{data.map((member) => (
-				<FamilyNode key={member.id} member={member} />
+				<FamilyNode key={member.id} member={member} level={0} />
 			))}
 		</Box>
 	);

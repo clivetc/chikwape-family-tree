@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "~/lib/prisma";
 // Adjust path to your prisma client
@@ -15,13 +16,11 @@ export default async function handler(
 			orderBy: { birthDate: "asc" },
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const memberMap = new Map<string, any>();
 		members.forEach((member) => {
 			memberMap.set(member.id, { ...member, children: [] });
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const treeRoots: any[] = [];
 
 		for (const member of members) {
