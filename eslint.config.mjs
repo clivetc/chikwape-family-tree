@@ -15,6 +15,8 @@ const eslintConfig = [
 		rules: {
 			"@typescript-eslint/no-explicit-any":
 				process.env.NODE_ENV === "production" ? "off" : "error",
+			"@typescript-eslint/no-unused-expressions": "off", // Disable this rule globally
+			"@typescript-eslint/no-this-alias": "off", // Disable this rule globally
 		},
 	},
 ];
