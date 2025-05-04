@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 const FamilyTree = ({ data }: { data: IFamily[] }) => {
 	const router = useRouter();
 
-	const handleClick = (e) => {
+	const handleClick = (e: { preventDefault: () => void }) => {
 		e.preventDefault();
 		router.push("/admin");
 	};

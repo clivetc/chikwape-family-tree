@@ -1,18 +1,7 @@
 import Head from "next/head";
-import { Geist, Geist_Mono } from "next/font/google";
 import { useFamilyTrees } from "~/hooks/useFamilyTrees";
 import { Box, Skeleton, VStack, SkeletonText } from "@chakra-ui/react";
 import FamilyTree from "~/components/FamilyTree";
-
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
 
 export default function Home() {
 	const { isFamilyLoading, data } = useFamilyTrees();
