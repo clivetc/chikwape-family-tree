@@ -19,7 +19,7 @@ export default async function handler(
 	}
 
 	try {
-		const members = await prisma.familyMember.findMany({
+		const members: FamilyMember[] = await prisma.familyMember.findMany({
 			orderBy: { birthDate: "asc" },
 		});
 
