@@ -1,39 +1,38 @@
 import React from "react";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack } from "@chakra-ui/react";
 import { IFamily } from "~/interfaces/family.interface";
 import { formatDate } from "~/constants/date";
 
-const FamilyNode = ({ member, level }: { member: IFamily; level: number }) => {
+const FamilyNode = ({ member }: { member: IFamily }) => {
 	return (
-		<VStack
-			align="center"
-			p={4}
-			borderRadius="lg"
-			boxShadow="md"
-			borderWidth={2}
-			borderColor="gray.200"
-			width={["90%", "80%", "70%"]}
-			marginBottom={8}
-			style={{ position: "relative" }}
-		>
-			<Text fontWeight="bold" textAlign="center" fontSize="sm">
-				{member.name}
-			</Text>
-			{member.birthDate && (
-				<Text fontSize="sm" color="gray.500">
-					Born: {formatDate(member.birthDate)}
+		<VStack align="center" position="relative">
+			<Box
+				p={4}
+				borderRadius="lg"
+				boxShadow="md"
+				borderWidth={2}
+				borderColor="gray.300"
+				bg="white"
+				minW="150px"
+				textAlign="center"
+			>
+				<Text fontWeight="bold" fontSize="md">
+					{member.name}
 				</Text>
-			)}
+				{member.birthDate && (
+					<Text fontSize="sm" color="gray.500">
+						Born: {formatDate(member.birthDate)}
+					</Text>
+				)}
+			</Box>
+
+			{/* Render children horizontally */}
 			{member.children && member.children.length > 0 && (
-				<>
-					<VStack align="center">
-						{member.children.map((child) => (
-							<Box key={child.id} style={{ marginLeft: level * 20 }}>
-								<FamilyNode member={child} level={level + 1} />
-							</Box>
-						))}
-					</VStack>
-				</>
+				<HStack align="flex-start" justify="center" wrap="wrap">
+					{member.children.map((child) => (
+						<FamilyNode key={child.id} member={child} />
+					))}
+				</HStack>
 			)}
 		</VStack>
 	);
