@@ -8,14 +8,25 @@ import {
 	Select,
 	createListCollection,
 	Portal,
+	Center,
+	Text,
 } from "@chakra-ui/react";
 import { useFamilyTrees } from "~/hooks/useFamilyTrees";
+import { formatDate } from "~/constants/date";
+import { useRouter } from "next/router";
 
 const AdminDashboard = () => {
 	const { isLoading, mutate, dataSource } = useFamilyTrees();
 	const [name, setName] = useState("");
 	const [birthDate, setBirthDate] = useState("");
 	const [parentId, setParentId] = useState("");
+
+	const router = useRouter();
+
+	const handleClick = (e: { preventDefault: () => void }) => {
+		e.preventDefault();
+		router.push("/");
+	};
 
 	const members = dataSource ?? [];
 
@@ -48,13 +59,19 @@ const AdminDashboard = () => {
 
 	return (
 		<Box p={6}>
-			<Heading mb={4}>Admin Dashboard</Heading>
+			<Button onClick={handleClick} colorScheme="teal" size="sm">
+				Go Home
+			</Button>
+			<Center>
+				<Heading mb={4}>Admin Dashboard</Heading>
+			</Center>
 			<VStack align="stretch">
 				<Input
 					placeholder="Member Name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 				/>
+				<Text>Birth Date (YYYY-MM-DD) </Text>
 				<Input
 					placeholder="Birth Date (YYYY-MM-DD)"
 					value={birthDate}
@@ -99,17 +116,20 @@ const AdminDashboard = () => {
 				<Heading size="md" mb={2}>
 					Existing Trees
 				</Heading>
-				{isLoading ? (
-					<p>Loading...</p>
-				) : (
-					<ul>
-						{members.map((member) => (
-							<li key={member.id}>
-								{member.name} {member.birthDate && `- ${member.birthDate}`}
-							</li>
-						))}
-					</ul>
-				)}
+				<Center>
+					{isLoading ? (
+						<p>Loading...</p>
+					) : (
+						<ul>
+							{members.map((member) => (
+								<li key={member.id}>
+									{member.name}{" "}
+									{member.birthDate && `- ${formatDate(member.birthDate)}`}
+								</li>
+							))}
+						</ul>
+					)}
+				</Center>
 			</Box>
 		</Box>
 	);

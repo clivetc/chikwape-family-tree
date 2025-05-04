@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { IFamily } from "~/interfaces/family.interface";
 import FamilyNode from "./FamilyNode";
 import { useRouter } from "next/router";
@@ -13,8 +13,8 @@ const FamilyTree = ({ data }: { data: IFamily[] }) => {
 	};
 
 	return (
-		<Box maxW="800px" mx="auto" mt={10}>
-			<Flex justifyContent={"space-between"}>
+		<Box maxW="1200px" mx="auto" mt={10} p={4}>
+			<Flex justifyContent="space-between" align="center">
 				<Text fontSize="2xl" fontWeight="bold" mb={4}>
 					Chikwape Family Tree
 				</Text>
@@ -22,10 +22,14 @@ const FamilyTree = ({ data }: { data: IFamily[] }) => {
 					Add Family Member
 				</Button>
 			</Flex>
-			{/* <Divider mb={4} /> */}
-			{data.map((member) => (
-				<FamilyNode key={member.id} member={member} level={0} />
-			))}
+
+			<Box mt={8} textAlign="center">
+				<VStack>
+					{data.map((member) => (
+						<FamilyNode key={member.id} member={member} level={0} />
+					))}
+				</VStack>
+			</Box>
 		</Box>
 	);
 };
