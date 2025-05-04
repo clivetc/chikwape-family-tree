@@ -45,6 +45,6 @@ export default async function handler(
 		return res.status(200).json(treeRoots);
 	} catch (error) {
 		console.error("Error building family tree:", error);
-		return res.status(500).json({ error: "Internal server error" });
+		res.status(500).json({ error: "Internal Server Error", message: error });
 	}
 }
