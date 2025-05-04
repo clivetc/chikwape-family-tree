@@ -1,0 +1,27 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "~/lib/prisma";
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse,
+) {
+	if (req.method !== "POST")
+		return res.status(405).json({ message: "Method not allowed" });
+
+	const { name, origin, createdBy } = req.body;
+
+	try {
+		const tree = await prisma.familyTree.create({
+			data: {
+				name,
+				origin,
+				createdBy,
+			},
+		});
+
+		res.status(200).json(tree);
+	} catch (err) {
+		console.error("Error creating tree:", err);
+		res.status(500).json({ message: "Failed to create tree" });
+	}
+}

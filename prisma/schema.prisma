@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("viewer") // viewer, admin
+  trees     FamilyTree[]
+}
+
+model FamilyTree {
+  id          String      @id @default(uuid())
+  name        String
+  origin      String?
+  createdBy   String
+  creator     User        @relation(fields: [createdBy], references: [id])
+  members     FamilyMember[]
+  createdAt   DateTime    @default(now())
+}
+
+model FamilyMember {
+  id        String       @id @default(cuid())
+  name      String
+  birthDate DateTime?
+  parentId  String?      
+  parent    FamilyMember? @relation("ParentChild", fields: [parentId], references: [id])
+  children  FamilyMember[] @relation("ParentChild")
+  treeId    String?
+  tree      FamilyTree?   @relation(fields: [treeId], references: [id]) 
+}
+
+
+
