@@ -28,11 +28,11 @@ const FamilyNode = ({
 			<Text fontWeight="bold" color="blue.800" fontSize="xl">
 				{member.name}
 			</Text>
-			{member.birthDate && (
+			{/* {member.birthDate && (
 				<Text fontSize="sm" color="gray.600">
 					Born: {formatDate(member.birthDate)}
 				</Text>
-			)}
+			)} */}
 			{parentName && (
 				<Text fontSize="sm" color="gray.500">
 					Parent: {parentName}
