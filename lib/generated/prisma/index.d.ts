@@ -4677,17 +4677,17 @@ export namespace Prisma {
 
   export type FamilyMemberWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    name?: string
     AND?: FamilyMemberWhereInput | FamilyMemberWhereInput[]
     OR?: FamilyMemberWhereInput[]
     NOT?: FamilyMemberWhereInput | FamilyMemberWhereInput[]
-    name?: StringFilter<"FamilyMember"> | string
     birthDate?: DateTimeNullableFilter<"FamilyMember"> | Date | string | null
     parentId?: StringNullableFilter<"FamilyMember"> | string | null
     treeId?: StringNullableFilter<"FamilyMember"> | string | null
     parent?: XOR<FamilyMemberNullableScalarRelationFilter, FamilyMemberWhereInput> | null
     children?: FamilyMemberListRelationFilter
     tree?: XOR<FamilyTreeNullableScalarRelationFilter, FamilyTreeWhereInput> | null
-  }, "id">
+  }, "id" | "name">
 
   export type FamilyMemberOrderByWithAggregationInput = {
     id?: SortOrder

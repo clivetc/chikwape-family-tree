@@ -34,8 +34,8 @@ model FamilyTree {
 }
 
 model FamilyMember {
-  id        String       @id @default(cuid())
-  name      String
+  id        String        @id @default(uuid())
+  name      String        @unique
   birthDate DateTime?
   parentId  String?      
   parent    FamilyMember? @relation("ParentChild", fields: [parentId], references: [id])

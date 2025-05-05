@@ -70,6 +70,7 @@ const AdminDashboard = () => {
 					placeholder="Member Name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
+					required
 				/>
 				<Text>Birth Date (YYYY-MM-DD) </Text>
 				<Input
