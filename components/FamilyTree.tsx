@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, Center } from "@chakra-ui/react";
 import { IFamily } from "~/interfaces/family.interface";
 import FamilyNode from "./FamilyNode";
 import { useRouter } from "next/router";
@@ -22,16 +22,17 @@ const FamilyTree = ({ data }: { data: IFamily[] }) => {
 					Add Family Member
 				</Button>
 			</Flex>
+
 			<Flex
 				direction="column"
 				justify="center"
 				align="center"
 				minHeight="100vh"
-				maxW={"100vw"}
+				width="100%"
+				px={2}
 				gap={8}
-				p={4}
 			>
-				<Box mt={8} textAlign="center" maxW="100%" overflowX="auto">
+				<Box mt={8} textAlign="center" w="100%" maxW="1200px" mx="auto">
 					{data.map((rootMember) => (
 						<FamilyNode key={rootMember.id} member={rootMember} />
 					))}
