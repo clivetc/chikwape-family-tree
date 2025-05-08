@@ -14,21 +14,29 @@ const FamilyTree = ({ data }: { data: IFamily[] }) => {
 
 	return (
 		<Box maxW="100%" overflowX="auto" mt={10} p={4}>
-			<Flex justifyContent="space-between" align="center">
-				<Text fontSize="2xl" fontWeight="bold" mb={4}>
+			<Flex justifyContent="space-between" align="center" mb={4}>
+				<Text fontSize="2xl" fontWeight="bold">
 					Chikwape Family Tree
 				</Text>
 				<Button onClick={handleClick} colorScheme="teal">
 					Add Family Member
 				</Button>
 			</Flex>
-
-			{/* Main Tree */}
-			<Box mt={8} textAlign="center">
-				{data.map((rootMember) => (
-					<FamilyNode key={rootMember.id} member={rootMember} />
-				))}
-			</Box>
+			<Flex
+				direction="column"
+				justify="center"
+				align="center"
+				minHeight="100vh"
+				maxW={"100vw"}
+				gap={8}
+				p={4}
+			>
+				<Box mt={8} textAlign="center" maxW="100%" overflowX="auto">
+					{data.map((rootMember) => (
+						<FamilyNode key={rootMember.id} member={rootMember} />
+					))}
+				</Box>
+			</Flex>
 		</Box>
 	);
 };
