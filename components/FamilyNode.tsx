@@ -76,10 +76,10 @@ const FamilyNode = ({
 				p={5}
 				borderRadius="xl"
 				bg={bg}
-				border="1px solid"
-				borderColor="gray.200"
-				boxShadow="xl"
-				position="relative"
+				borderLeft="4px solid"
+				borderColor={borderColor}
+				rounded="xl"
+				boxShadow="lg"
 				_hover={{
 					boxShadow: "0 0 15px rgba(56, 161, 105, 0.6)",
 					transform: "translateY(-5px)",
