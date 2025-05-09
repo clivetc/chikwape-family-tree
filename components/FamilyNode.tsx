@@ -1,27 +1,19 @@
-import React from "react";
+import React, { useRef, useLayoutEffect, useState } from "react";
 import {
 	Box,
 	Text,
 	VStack,
-	Flex,
-	useBreakpointValue,
 	HStack,
 	Avatar,
+	useBreakpointValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { IFamily } from "~/interfaces/family.interface";
 import { formatDate } from "~/constants/date";
 import { Tooltip } from "~/components/ui/tooltip";
-import { useColorModeValue } from "~/components/ui/color-mode";
 
 const MotionBox = motion(Box);
-
 const generationEmojis = ["🌱", "🌿", "🌳", "🪴", "🌾", "🌲"];
-
-const getBgColor = (generation: number) =>
-	["white", "gray.50", "gray.100", "gray.200", "gray.300", "gray.400"][
-		generation
-	] || "gray.100";
 
 const getBorderColor = (generation: number) =>
 	[
@@ -41,107 +33,137 @@ const FamilyNode = ({
 	parentName?: string;
 	generation?: number;
 }) => {
-	const isMobile = useBreakpointValue({ base: true, md: false });
-	const bg = useColorModeValue(getBgColor(generation), "gray.700");
-	const borderColor = getBorderColor(generation);
+	const nodeRef = useRef<HTMLDivElement>(null);
+	const childRefs = useRef<HTMLDivElement[]>([]);
+	const [lines, setLines] = useState<
+		{ x1: number; y1: number; x2: number; y2: number }[]
+	>([]);
+
 	const emoji = generationEmojis[generation - 1] || "🌿";
+	const borderColor = getBorderColor(generation);
+
+	useLayoutEffect(() => {
+		if (!nodeRef.current || !member.children?.length) return;
+
+		const parentRect = nodeRef.current.getBoundingClientRect();
+		const parentX = parentRect.left + parentRect.width / 2;
+		const parentY = parentRect.bottom;
+
+		const newLines = childRefs.current.map((child) => {
+			if (!child) return null;
+			const childRect = child.getBoundingClientRect();
+			const childX = childRect.left + childRect.width / 2;
+			const childY = childRect.top;
+			return { x1: parentX, y1: parentY, x2: childX, y2: childY };
+		});
+
+		setLines(newLines.filter(Boolean) as any);
+	}, [member.children]);
 
 	return (
-		<MotionBox
-			w="full"
-			px={{ base: 2, md: 0 }}
-			ml={isMobile ? generation * 2 : generation * 4}
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.4 }}
-			position="relative"
-		>
-			{!isMobile && (
-				<Box
-					position="absolute"
-					left="-2px"
-					top="0"
-					bottom="0"
-					width="2px"
-					bgGradient={`linear(to-b, ${borderColor}, transparent)`}
-					borderRadius="full"
-				/>
-			)}
-
-			<VStack
-				align="start"
-				gap={4}
-				width="100%"
-				maxW={{ base: "100%", md: "420px", lg: "480px" }}
-				p={5}
-				borderRadius="xl"
-				bg={bg}
-				borderLeft="4px solid"
-				borderColor={borderColor}
-				rounded="xl"
+		<Box position="relative" ref={nodeRef} w="fit-content" mx="auto" mb={12}>
+			<MotionBox
+				borderRadius="2xl"
+				p={4}
+				bg="white"
+				border="1px solid"
+				borderColor="gray.200"
 				boxShadow="lg"
-				_hover={{
-					boxShadow: "0 0 15px rgba(56, 161, 105, 0.6)",
-					transform: "translateY(-5px)",
-					transition: "all 0.3s ease",
-				}}
+				_hover={{ boxShadow: "xl", transform: "scale(1.02)" }}
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.4 }}
 			>
-				<Text fontSize="sm" fontWeight="bold" color="green.700">
-					{emoji} Generation {generation}
-				</Text>
-
-				<HStack gap={4}>
-					<Avatar.Root variant="solid" size="lg" borderRadius="full">
-						<Avatar.Fallback name={member.name} />
-					</Avatar.Root>
-
-					<Tooltip content={`More about ${member.name}`}>
-						<Text
-							fontWeight={generation === 1 ? "bold" : "semibold"}
-							fontSize={{ base: "md", md: "xl" }}
-							color="blue.700"
-							_hover={{ color: "blue.500" }}
-						>
-							{member.name}
-						</Text>
-					</Tooltip>
-				</HStack>
-
-				{member.birthDate && (
-					<Text fontSize="sm" color="gray.600">
-						🎂 Born: {formatDate(member.birthDate)}
-					</Text>
-				)}
-
-				{parentName && (
-					<Text fontSize="sm" color="gray.500">
-						👪 Parent: {parentName}
-					</Text>
-				)}
-
-				<Box borderColor="gray.300" divideX="2px" />
-			</VStack>
-
-			{/* Children Generation Nodes */}
-			{member.children && member.children.length > 0 && (
-				<Flex
-					direction={{ base: "column", md: "row" }}
-					gap={6}
-					mt={6}
-					flexWrap="wrap"
-					align={isMobile ? "start" : "center"}
+				<VStack
+					align="start"
+					borderLeft="3px solid"
+					borderColor={borderColor}
+					width={{ base: "100%", md: "320px", lg: "360px" }} // 👈 reduce width
+					maxW={{ base: "100%", md: "320px", lg: "360px" }} // 👈 reduce max width
+					p={3} // 👈 reduce padding
+					borderRadius="xl"
+					textAlign="center"
 				>
-					{member.children.map((child) => (
-						<FamilyNode
-							key={child.id}
-							member={child}
-							parentName={member.name}
-							generation={generation + 1}
-						/>
-					))}
-				</Flex>
+					<Text fontSize="xs" fontWeight="bold" color="green.700">
+						{emoji} Generation {generation}
+					</Text>
+					<HStack>
+						<Avatar.Root variant="solid" size="sm">
+							<Avatar.Fallback name={member.name} />
+						</Avatar.Root>
+						<Tooltip content={`More about ${member.name}`}>
+							<Text
+								fontWeight={generation === 1 ? "bold" : "semibold"}
+								fontSize={{ base: "md", md: "lg" }}
+								color="blue.700"
+							>
+								{member.name}
+							</Text>
+						</Tooltip>
+					</HStack>
+					{member.birthDate && (
+						<Text fontSize="sm" color="gray.600">
+							🎂 Born: {formatDate(member.birthDate)}
+						</Text>
+					)}
+					{parentName && (
+						<Text fontSize="xs" color="gray.500">
+							👪 Parent: {parentName}
+						</Text>
+					)}
+				</VStack>
+			</MotionBox>
+
+			{member.children?.length > 0 && (
+				<Box mt={10} position="relative">
+					<svg
+						width="100%"
+						height="100%"
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							pointerEvents: "none",
+							zIndex: 0,
+						}}
+					>
+						{lines.map((line, index) => (
+							<line
+								key={index}
+								x1={line.x1}
+								y1={line.y1}
+								x2={line.x2}
+								y2={line.y2}
+								stroke="gray"
+								strokeWidth="2"
+								strokeDasharray="4"
+							/>
+						))}
+					</svg>
+
+					<HStack
+						justify="center"
+						flexWrap="wrap"
+						align="start"
+						position="relative"
+						zIndex={1}
+					>
+						{member.children.map((child, index) => (
+							<Box
+								key={child.id}
+								ref={(el: any) => (childRefs.current[index] = el!)}
+							>
+								<FamilyNode
+									member={child}
+									parentName={member.name}
+									generation={generation + 1}
+								/>
+							</Box>
+						))}
+					</HStack>
+				</Box>
 			)}
-		</MotionBox>
+		</Box>
 	);
 };
 
