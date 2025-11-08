@@ -42,4 +42,22 @@ model FamilyMember {
   children  FamilyMember[] @relation("ParentChild")
   treeId    String?
   tree      FamilyTree?    @relation(fields: [treeId], references: [id])
+  spouses   Spouse[]       @relation("MemberSpouses")
+}
+
+model Spouse {
+  id           String       @id @default(uuid())
+  name         String
+  birthDate    DateTime?
+  marriageDate DateTime?
+  divorceDate  DateTime? // Track when relationship ended
+  status       String       @default("married") // married, divorced, widowed, partner
+  order        Int          @default(1) // Order of marriages (1st, 2nd, etc.)
+  memberId     String
+  member       FamilyMember @relation("MemberSpouses", fields: [memberId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([memberId])
+  @@index([status])
 }

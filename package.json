@@ -6,7 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:spouse": "prisma migrate dev --name add_spouse_support && prisma generate",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:push": "prisma db push",
+    "db:pull": "prisma db pull"
   },
   "dependencies": {
     "@chakra-ui/cli": "^3.15.1",
@@ -16,6 +22,7 @@
     "@prisma/client": "^6.6.0",
     "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-query": "^5.75.2",
+    "@vercel/analytics": "^1.5.0",
     "add": "^2.0.6",
     "axios": "^1.8.4",
     "framer-motion": "^12.6.5",

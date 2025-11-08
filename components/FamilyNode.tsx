@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Box, Text, VStack, HStack, Avatar, Badge, Flex } from "@chakra-ui/react";
+import { Box, Text, VStack, HStack, Avatar, Badge, Flex, Separator } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IFamily } from "~/interfaces/family.interface";
+import { IFamily, ISpouse } from "~/interfaces/family.interface";
 import { formatDate } from "~/constants/date";
 import { Tooltip } from "~/components/ui/tooltip";
 
@@ -20,6 +20,86 @@ const getGradient = (generation: number) => {
 	return gradients[(generation - 1) % gradients.length];
 };
 
+const getStatusEmoji = (status?: string) => {
+	switch (status) {
+		case "married":
+			return "💍";
+		case "divorced":
+			return "💔";
+		case "widowed":
+			return "🕊️";
+		case "partner":
+			return "💕";
+		default:
+			return "💕";
+	}
+};
+
+const getStatusColor = (status?: string) => {
+	switch (status) {
+		case "married":
+			return { bg: "pink.50", border: "pink.200", avatar: "pink.400" };
+		case "divorced":
+			return { bg: "gray.50", border: "gray.300", avatar: "gray.400" };
+		case "widowed":
+			return { bg: "purple.50", border: "purple.200", avatar: "purple.400" };
+		case "partner":
+			return { bg: "blue.50", border: "blue.200", avatar: "blue.400" };
+		default:
+			return { bg: "pink.50", border: "pink.200", avatar: "pink.400" };
+	}
+};
+
+const SpouseCard = ({ spouse }: { spouse: ISpouse }) => {
+	const colors = getStatusColor(spouse.status);
+	const statusEmoji = getStatusEmoji(spouse.status);
+
+	return (
+		<Box
+			bg={colors.bg}
+			borderRadius="xl"
+			p={3}
+			border="2px solid"
+			borderColor={colors.border}
+			boxShadow="0 4px 12px rgba(0,0,0,0.08)"
+		>
+			<HStack gap={2} align="center">
+				<Avatar.Root size="sm" bg={colors.avatar} color="white">
+					<Avatar.Fallback name={spouse.name} fontSize="xs" />
+				</Avatar.Root>
+				<VStack align="start" gap={0} flex={1}>
+					<HStack gap={1}>
+						<Text fontSize="sm" fontWeight="semibold" color="gray.800">
+							{spouse.name}
+						</Text>
+						<Text fontSize="xs">{statusEmoji}</Text>
+						{spouse.order && spouse.order > 1 && (
+							<Badge size="xs" colorScheme="gray">
+								{spouse.order === 2 ? "2nd" : spouse.order === 3 ? "3rd" : `${spouse.order}th`}
+							</Badge>
+						)}
+					</HStack>
+					{spouse.marriageDate && (
+						<Text fontSize="xs" color="gray.600">
+							💍 Married: {formatDate(spouse.marriageDate)}
+						</Text>
+					)}
+					{spouse.divorceDate && (
+						<Text fontSize="xs" color="gray.600">
+							💔 Divorced: {formatDate(spouse.divorceDate)}
+						</Text>
+					)}
+					{spouse.birthDate && !spouse.marriageDate && !spouse.divorceDate && (
+						<Text fontSize="xs" color="gray.600">
+							🎂 Born: {formatDate(spouse.birthDate)}
+						</Text>
+					)}
+				</VStack>
+			</HStack>
+		</Box>
+	);
+};
+
 const MemberCard = ({
 	member,
 	parentName,
@@ -33,12 +113,13 @@ const MemberCard = ({
 	const emoji = generationEmojis[(generation - 1) % generationEmojis.length];
 	const gradient = getGradient(generation);
 	const childCount = member.children?.length || 0;
+	const hasSpouses = member.spouses && member.spouses.length > 0;
 
 	return (
 		<MotionBox
 			borderRadius="2xl"
 			bg="white"
-			width={{ base: "280px", sm: "300px", md: "320px" }}
+			width={{ base: "280px", sm: "300px", md: "340px" }}
 			boxShadow="0 10px 30px rgba(0,0,0,0.15)"
 			_hover={{
 				boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
@@ -164,6 +245,25 @@ const MemberCard = ({
 						</HStack>
 					)}
 				</VStack>
+
+				{/* Spouses/Partners Section */}
+				{hasSpouses && (
+					<VStack align="stretch" gap={2} pt={3} mt={2} borderTop="2px dashed" borderColor="pink.200">
+						<HStack gap={1}>
+							<Text fontSize="xs" fontWeight="bold" color="pink.600" textTransform="uppercase">
+								{member.spouses!.length > 1 ? "Partners" : "Partner"}
+							</Text>
+							<Badge colorScheme="pink" fontSize="xs" borderRadius="full">
+								{member.spouses!.length}
+							</Badge>
+						</HStack>
+						<VStack align="stretch" gap={2}>
+							{member.spouses!.map((spouse, index) => (
+								<SpouseCard key={spouse.id || index} spouse={spouse} />
+							))}
+						</VStack>
+					</VStack>
+				)}
 			</VStack>
 
 			{/* Decorative corner */}
